@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <title>Document</title>
+</head>
+<style>
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    nav {
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        margin-bottom: 8px;
+    }
+
+    .id-emoji {
+        width: 28px;
+        height: 28px;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 32px;
+        border-radius: 8px;
+        border: 2px solid #cccccc55;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .pb-bar {
+        height: 100%;
+        border-radius: 6px;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        color: white;
+
+        transition: width 1.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+    }
+
+    .pb-bar.aligned {
+        width: 25%;
+        background-color: #28a745;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .pb-bar.opposed {
+        width: 75%;
+        background-color: #dc3545;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .pb-text {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 0.5rem;
+    }
+
+    .pb-text-over {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        position: absolute;
+        color: white;
+        padding: 0 calc(16px);
+        text-align: center;
+        align-items: center;
+        font-weight: bolder;
+        font-size: 19px;
+    }
+
+    .pb-text-over .aligned {
+        -webkit-text-stroke: 0.1px #28a745;
+    }
+
+    .pb-text-over .opposed {
+        -webkit-text-stroke: 0.1px #dc3545;
+    }
+
+    .buttons-vote {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 0.5rem;
+    }
+
+    .chatroom-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .chatroom {
+        width: calc(50% - 4px);
+        height: 300px;
+        border: 1px solid #cccccc55;
+        border-radius: 8px;
+        overflow-y: auto;
+        padding: 2px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chatroom.aligned {
+        border: 2px solid rgba(40, 167, 70, 0.564);
+        box-shadow: 2px 2px 10px rgba(40, 167, 69, 0.25);
+        /* background-color: #e6f4ea; */
+    }
+
+    .chatroom.opposed {
+        border: 2px solid rgba(220, 53, 70, 0.561);
+        box-shadow: 2px 2px 10px rgba(220, 53, 69, 0.25);
+        /* background-color: #fbe8e8; */
+    }
+
+    .message {
+        padding: 2px;
+        border-radius: 6px;
+        font-size: 12px;
+        width: calc(100% - 4px);
+        word-wrap: break-word;
+        padding-bottom: 12px;
+        border-radius: 0;
+    }
+
+    .message.aligned {
+        /* background-color: #28a745; */
+        color: white;
+        align-self: flex-start;
+        border-bottom: 1px #0f04 solid;
+        margin: 2px;
+        margin-bottom: 5px;
+    }
+
+    .message.opposed {
+        /* background-color: #dc3545; */
+        color: white;
+        align-self: flex-end;
+        border-bottom: 1px #f004 solid;
+        text-align: right;
+        margin: 2px;
+        margin-bottom: 5px;
+    }
+
+    .username {
+        font-weight: bold;
+        font-size: 12px;
+        opacity: 0.8;
+    }
+
+    .message.opposed .username {
+        color: #ffc9cf
+    }
+
+    .message.aligned .username {
+        color: #d6ffdf
+    }
+
+    .reply {
+        text-align: right;
+        font-weight: bolder;
+    }
+
+    .news-container {
+        border: 1px solid #6a6a6a;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 2px 2px 10px rgba(255, 255, 255, 0.1);
+        margin: 0 auto;
+        font-family: Arial, sans-serif;
+        color: #ddd;
+        max-height: 95vh;
+        height: 95vh;
+        overflow-y: auto;
+        margin-bottom: 10rem;
+    }
+
+    .news-item {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-bottom: 1px solid #333;
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .news-item:hover {
+        background-color: #2225;
+    }
+
+    .news-item:last-child {
+        border-bottom: none;
+    }
+
+    .news-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #ffffff;
+    }
+
+    .news-meta {
+        font-size: 0.9rem;
+        color: #aaaaaa;
+        margin-top: 4px;
+    }
+
+    .news-content {
+        font-size: 1rem;
+        color: #cccccc;
+        margin-top: 8px;
+        line-height: 1.5;
+    }
+
+    .read-more {
+        display: inline-block;
+        margin-top: 6px;
+        font-size: 0.9rem;
+        color: #4dabf7;
+        text-decoration: none;
+    }
+
+    .read-more:hover {
+        text-decoration: underline;
+    }
+
+    .chat-input {
+        padding: 0.25rem;
+        background-color: rgb(125, 125, 125);
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        z-index: 1000;
+        border: 1px solid rgb(53, 58, 70);
+        filter: drop-shadow(0px -5px 12px rgba(0, 0, 0, 0.5));
+        transform: translateY(95%);
+        transition: transform 1s cubic-bezier(.21,1.01,.05,1);
+    }
+</style>
+
+<body>
+    <div class="container is-fluid" style="padding-left: 8px; padding-right: 8px;">
+        <div>
+            <h6 class="title is-6" style="color: darkkhaki; text-align: left; margin: 0.5rem;">Topik Iseng Minggu Ini:</h6>
+            <h5 class="title is-5" style="color: white; text-align: center; margin: 0">Pengesahan RUU Dwifungsi TNI</h5>
+        </div>
+
+        <hr style="margin: 0.5rem;">
+
+        <div class="pb-text">
+            <span class="title is-5" style="margin-bottom: 5px; color: green;">Mendukung</span>
+            <span class="title is-5" style="margin-bottom: 5px; color: red;">Menentang</span>
+        </div>
+        <div class="progress-bar">
+            <div class="pb-bar aligned" id="bar-aligned"></div>
+            <div class="pb-bar opposed" id="bar-opposed"></div>
+            <div class="pb-text-over">
+                <span class="aligned" id="text-aligned-percent">1,259,000</span>
+                <span class="opposed" id="text-opposed-percent">39,249,111</span>
+            </div>
+        </div>
+        <div class="pb-text">
+            <span class="title is-5" style="margin-bottom: 5px;" id="text-aligned-count">Mendukung</span>
+            <span class="title is-5" style="margin-bottom: 5px;" id="text-opposed-count">Menentang</span>
+        </div>
+
+        <div class="buttons-vote">
+            <button class="button is-success is-small" style="width: 33%; margin-top: 1rem;">Iseng Dukung</button>
+            <button class="button is-danger is-small" style="width: 33%; margin-top: 1rem;">Iseng Nentang</button>
+        </div>
+
+        <h5 class="title is-5" style="margin-top: 1rem; margin-bottom: 1rem; text-align: center">Pendapat Umum</h5>
+        <div class="chatroom-container">
+
+            <div class="chatroom aligned">
+                <div class="message aligned">
+                    <div class="username">User123</div>
+                    <span>
+                        "I believe this policy will improve the economy!"
+                    </span> 
+                    <div class="reply">
+                        <a>balas</a>
+                    </div>
+                </div>
+                <div class="message aligned">
+                    <div class="username">Supporter88</div>
+                    "The government is doing its best. We need to trust the process."
+                </div>
+            </div>
+
+            <div class="chatroom opposed">
+                <div class="message opposed">
+                    <div class="username">Critic99</div>
+                    "The current leadership has failed us. We need change!"
+                </div>
+                <div class="message opposed">
+                    <div class="username">Rebel42</div>
+                    "People deserve better representation!"
+                </div>
+            </div>
+
+        </div>
+
+        <h5 class="title is-5" style="margin-top: 1rem; margin-bottom: 1rem; text-align: center">Berita Tentang Keisengan Ini</h5>
+        <div class="news-container">
+            <a href="#" class="news-item">
+                <div class="news-title">Civil Unrest Intensifies in the Capital</div>
+                <div class="news-meta">March 19, 2025 | Politics</div>
+                <div class="news-content">
+                    Thousands of protesters have gathered in the streets, demanding government reform after recent
+                    controversial policies. Authorities have deployed additional security forces...
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="tag is-danger is-outlined" style="position: absolute; top: 5px; right: 5px; z-index: 1000; display: flex; justify-content: center; align-items: center; text-align: center; vertical-align: middle">
+        Connected&emsp14;<div id="conn-circle" style="width: 10px; height: 10px; border-radius: 100000px; background-color: red; border: 1px solid #fff8; padding: 0; margin: 0"></div>
+    </div>
+
+    <div class="chat-input" id="chat-window">
+        <div class="field" style="margin-bottom: 0.25rem">
+            <div class="control">
+                <textarea id="chat-textarea" class="textarea" style="font-size: 12px; resize: none;" rows="3" placeholder="Tulis pesanmu disini..."></textarea>
+            </div>
+        </div>
+        <div class="field is-grouped" style="justify-content: right; margin-top: 0">
+            <div class="control">
+                <label class="label"><b id="chat-char-count">240</b><i>/240</i></label>
+            </div>
+            <div class="control">
+                <button class="button is-link is-small" style="height: 24px">Kirim</button>
+            </div>
+            <button class="button is-medium" id="chat-open-close" style="position: absolute; background-color: rgb(50, 50, 50); right: 0; top: -40px; height: 40px; z-index: -1; border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 0;">Tulis Pendapat</button>
+        </div>
+    </div>
+
+    <div class="modal is-active" id="modal_login" style="z-index: 10000;">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <div class="box">
+                <h4 class="title is-4 has-text-centered">Jadi Member Bersuara</h4>
+                <form action="">
+                    <div class="field">
+                        <label class="label" for="username">Username</label>
+                        <div class="control">
+                            <input id="username" name="username" class="input" type="tel" placeholder="jekkipengen" required aria-required="true">
+                        </div>
+                    </div>
+    
+                    <div class="field">
+                        <label class="label" for="password">Password</label>
+                        <div class="control">
+                            <input id="password" name="password" class="input" type="password" placeholder="***************" required aria-required="true">
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 5px">
+                        <button type="button" id="batal_login" class="button is-danger is-fullwidth">
+                            Batal
+                        </button>
+                        <button type=submit class="button is-success is-fullwidth">
+                            Masuk / Daftar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script defer>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const modal = document.getElementById('modal_login');
+
+        document.getElementById('batal_login')
+            .addEventListener('click', () => {
+                modal.classList.remove('is-active');
+            });
+    });
+    const element_chatTextArea = document.getElementById("chat-textarea");
+
+    const element_textAlignedCount = document.getElementById("text-aligned-count");
+    const element_textOpposedCount = document.getElementById("text-opposed-count");
+    const element_textAlignedPercent = document.getElementById("text-aligned-percent");
+    const element_textOpposedPercent = document.getElementById("text-opposed-percent");
+
+    const element_barAligned = document.getElementById("bar-aligned");
+    const element_barOpposed = document.getElementById("bar-opposed");
+
+    const element_chatOpenClose = document.getElementById("chat-open-close");
+    const element_chatWindow = document.getElementById("chat-window");
+    
+    const states = {
+        el_chat_isOpen: false,
+        countAligned: Math.floor(Math.random() * 500),
+        countOpposed: Math.floor(Math.random() * 500),
+        percentAligned: 0,
+        percentOpposed: 0,
+        chatTextAreaValue: ""
+    }
+
+    element_chatOpenClose.onclick = () => {
+        if(states.el_chat_isOpen) {
+            element_chatWindow.style.transform = "translateY(95%)";
+            states.el_chat_isOpen = false;
+            element_chatOpenClose.innerText = "Tulis Pendapat";
+        } else {
+            element_chatWindow.style.transform = "translateY(0%)";
+            states.el_chat_isOpen = true;
+            element_chatOpenClose.innerText = "Tutup";
+        }
+    };
+
+    function onChatTextAreaOnChange(e) {
+        element_chatTextArea.value = element_chatTextArea.value.substring(0, 240);
+        const charCount = element_chatTextArea.value.length;
+        document.getElementById("chat-char-count").innerText = charCount;
+    }
+
+    element_chatTextArea.oninput = onChatTextAreaOnChange;
+    element_chatTextArea.onchange = onChatTextAreaOnChange;
+    element_chatTextArea.onkeyup = onChatTextAreaOnChange;
+    element_chatTextArea.onkeydown = onChatTextAreaOnChange;
+    element_chatTextArea.onpaste = onChatTextAreaOnChange;
+    element_chatTextArea.oncopy = onChatTextAreaOnChange;
+
+
+    function updateProgressBar() {
+        const total = states.countAligned + states.countOpposed;
+        states.percentAligned = (states.countAligned / total) * 100;
+        states.percentOpposed = (states.countOpposed / total) * 100;
+
+        element_barAligned.style.width = `${states.percentAligned}%`;
+        element_barOpposed.style.width = `${states.percentOpposed}%`;
+    }
+
+    function onOpposedUpdate(new_voter_count) {
+        states.countOpposed = new_voter_count;
+        element_textOpposedCount.innerText = states.countOpposed.toString();
+        element_textOpposedPercent.innerText = states.percentOpposed.toPrecision(4).toString() + "%";
+        updateProgressBar();
+    }
+
+    function onAlignedUpdate(new_voter_count) {
+        states.countAligned = new_voter_count;
+        element_textAlignedCount.innerText = states.countAligned.toString();
+        element_textAlignedPercent.innerText = states.percentAligned.toPrecision(4).toString() + "%";
+        updateProgressBar();
+    }
+
+    setInterval(() => {
+        const current = states.countOpposed;
+        let target = current + (Math.floor(Math.random() * 1000) - 500);
+        if(target < 0) target = 0;
+
+        onOpposedUpdate(target);
+    }, 125);
+
+    setInterval(() => {
+        const current = states.countAligned;
+        let target = current + (Math.floor(Math.random() * 1000) - 500);
+        if(target < 0) target = 0;
+
+        onAlignedUpdate(target);
+    }, 125);
+
+</script>
+
+</html>
