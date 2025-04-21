@@ -1,0 +1,7 @@
+{
+  "name": "civil-unrest-monitor",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ]
+}
