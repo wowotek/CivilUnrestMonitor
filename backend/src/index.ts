@@ -1,9 +1,10 @@
 import {
   fastifyTRPCPlugin,
-  FastifyTRPCPluginOptions,
+  type FastifyTRPCPluginOptions,
 } from "@trpc/server/adapters/fastify";
 import fastify from "fastify";
 import { createContext, appRouter, type AppRouter } from "./router";
+import { authSvc, healthSvc } from "./service";
 
 const server = fastify({
   maxParamLength: 5000,
@@ -12,7 +13,7 @@ const server = fastify({
 server.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
   trpcOptions: {
-    router: appRouter,
+    router: appRouter(healthSvc, authSvc),
     createContext,
     onError({ path, error }) {
       // report to error monitoring
@@ -29,4 +30,3 @@ server.register(fastifyTRPCPlugin, {
     process.exit(1);
   }
 })();
-

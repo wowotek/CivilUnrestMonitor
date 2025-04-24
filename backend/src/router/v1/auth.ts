@@ -1,28 +1,30 @@
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
+import type { AuthSvc } from "../../service/auth";
 
-export const authRouter = router({
-  signUp: publicProcedure
-    .input(
-      z.object({
-        email: z.string().email(),
-        password: z.string().min(6),
+export const authRouter = (authSvc?: AuthSvc) =>
+  router({
+    signUp: publicProcedure
+      .input(
+        z.object({
+          email: z.string().email(),
+          password: z.string().min(6),
+        }),
+      )
+      .mutation(async ({ input }) => {
+        const signUpOut = await authSvc?.signUp(input);
+        return { message: "User signed up", data: signUpOut };
       }),
-    )
-    .mutation(async ({ input }) => {
-      // sign-up logic here
-      return { message: "User signed up", email: input.email };
-    }),
 
-  signIn: publicProcedure
-    .input(
-      z.object({
-        email: z.string().email(),
-        password: z.string(),
+    signIn: publicProcedure
+      .input(
+        z.object({
+          email: z.string().email(),
+          password: z.string(),
+        }),
+      )
+      .mutation(async ({ input }) => {
+        const signInOut = await authSvc?.signIn(input);
+        return { message: "User signed in", data: signInOut };
       }),
-    )
-    .mutation(async ({ input }) => {
-      // sign-in logic here
-      return { message: "User signed in", email: input.email };
-    }),
-});
+  });

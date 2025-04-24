@@ -1,7 +1,9 @@
+import type { HealthSvc } from "../../service/health";
 import { publicProcedure, router } from "../trpc";
 
-export const healthRouter = router({
-  check: publicProcedure.query(() => {
-    return { status: "ok" };
-  }),
-});
+export const healthRouter = (healthSvc?: HealthSvc) =>
+  router({
+    check: publicProcedure.query(async () => {
+      return healthSvc?.check();
+    }),
+  });
