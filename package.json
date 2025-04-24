@@ -3,5 +3,9 @@
   "workspaces": [
     "backend",
     "frontend"
-  ]
+  ],
+  "dependencies": {
+    "@trpc/client": "^11.1.1",
+    "@trpc/server": "^11.1.1"
+  }
 }
