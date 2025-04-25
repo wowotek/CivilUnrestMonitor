@@ -1,5 +1,5 @@
-import type { AuthSvc } from "../../service/auth";
-import type { HealthSvc } from "../../service/health";
+import type { AuthSvc } from "../../core/service/auth";
+import type { HealthSvc } from "../../core/service/health";
 import { router } from "../trpc";
 import { authRouter } from "./auth";
 import { healthRouter } from "./health";

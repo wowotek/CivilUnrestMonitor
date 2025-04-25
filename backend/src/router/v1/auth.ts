@@ -1,13 +1,13 @@
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import type { AuthSvc } from "../../service/auth";
+import type { AuthSvc } from "../../core/service/auth";
 
 export const authRouter = (authSvc?: AuthSvc) =>
   router({
     signUp: publicProcedure
       .input(
         z.object({
-          email: z.string().email(),
+          username: z.string().email(),
           password: z.string().min(6),
         }),
       )
@@ -19,7 +19,7 @@ export const authRouter = (authSvc?: AuthSvc) =>
     signIn: publicProcedure
       .input(
         z.object({
-          email: z.string().email(),
+          username: z.string().email(),
           password: z.string(),
         }),
       )

@@ -4,7 +4,8 @@ import {
 } from "@trpc/server/adapters/fastify";
 import fastify from "fastify";
 import { createContext, appRouter, type AppRouter } from "./router";
-import { authSvc, healthSvc } from "./service";
+import { authSvc, healthSvc } from "./core/service";
+import { userRepository } from "./repository";
 
 const server = fastify({
   maxParamLength: 5000,
@@ -13,7 +14,7 @@ const server = fastify({
 server.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
   trpcOptions: {
-    router: appRouter(healthSvc, authSvc),
+    router: appRouter(healthSvc, authSvc(userRepository)),
     createContext,
     onError({ path, error }) {
       // report to error monitoring

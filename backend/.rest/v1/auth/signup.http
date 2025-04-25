@@ -2,6 +2,6 @@ POST http://localhost:3000/trpc/v1.auth.signUp
 Content-Type: application/json
 
 {
-  "email": "afikrim10@gmail.com",
+  "username": "afikrim10@gmail.com",
   "password": "123456"
 }
