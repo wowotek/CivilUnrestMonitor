@@ -1,2 +1,2 @@
-export * from "./health";
-export * from "./auth";
+export * from "./health_svc";
+export * from "./auth_svc";

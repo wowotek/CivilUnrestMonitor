@@ -1,4 +1,13 @@
-import type { SignInIn, SignInOut, SignUpIn, SignUpOut, User } from "../domain";
+import {
+  UserAlreadyExistsError,
+  UserNotFoundError,
+  UserPasswordIncorrectError,
+  type SignInIn,
+  type SignInOut,
+  type SignUpIn,
+  type SignUpOut,
+  type User,
+} from "../domain";
 import type { UserRepository } from "../repository";
 
 export type AuthSvc = {
@@ -21,15 +30,11 @@ const signIn =
     } catch (err) {
       // TODO: handle error
       throw err;
-    } finally {
-      if (!user) {
-        throw new Error("User not found");
-      }
     }
 
     // TODO: check password hashing
     if (user?.password !== input.password) {
-      throw new Error("Invalid password");
+      throw new UserPasswordIncorrectError();
     }
 
     return {
@@ -48,10 +53,12 @@ const signUp =
       user = await userRepository.findByUsername(input.username);
     } catch (err) {
       // TODO: handle error
-      throw err;
+      if (!(err instanceof UserNotFoundError)) {
+        throw err;
+      }
     } finally {
       if (!!user) {
-        throw new Error("User already exists");
+        throw new UserAlreadyExistsError(input.username);
       }
     }
 

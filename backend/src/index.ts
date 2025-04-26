@@ -6,6 +6,16 @@ import fastify from "fastify";
 import { createContext, appRouter, type AppRouter } from "./router";
 import { authSvc, healthSvc } from "./core/service";
 import { userRepository } from "./repository";
+import { drizzle } from "drizzle-orm/node-postgres";
+
+const db = drizzle("postgres://postgres:postgres@localhost:5432/postgres");
+
+const userRepo = userRepository(db);
+
+const healthService = healthSvc;
+const authService = authSvc(userRepo);
+
+const router = appRouter(healthService, authService);
 
 const server = fastify({
   maxParamLength: 5000,
@@ -14,7 +24,7 @@ const server = fastify({
 server.register(fastifyTRPCPlugin, {
   prefix: "/trpc",
   trpcOptions: {
-    router: appRouter(healthSvc, authSvc(userRepository)),
+    router: router,
     createContext,
     onError({ path, error }) {
       // report to error monitoring

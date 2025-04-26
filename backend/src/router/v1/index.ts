@@ -1,8 +1,8 @@
-import type { AuthSvc } from "../../core/service/auth";
-import type { HealthSvc } from "../../core/service/health";
+import type { AuthSvc } from "../../core/service/auth_svc";
+import type { HealthSvc } from "../../core/service/health_svc";
 import { router } from "../trpc";
-import { authRouter } from "./auth";
-import { healthRouter } from "./health";
+import { authRouter } from "./auth_router";
+import { healthRouter } from "./health_router";
 
 export const v1Router = (healthSvc?: HealthSvc, authSvc?: AuthSvc) =>
   router({

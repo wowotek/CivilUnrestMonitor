@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
-import type { AuthSvc } from "../../core/service/auth";
+import type { AuthSvc } from "../../core/service/auth_svc";
+import { mapError } from "../mapper";
 
 export const authRouter = (authSvc?: AuthSvc) =>
   router({
@@ -12,8 +13,12 @@ export const authRouter = (authSvc?: AuthSvc) =>
         }),
       )
       .mutation(async ({ input }) => {
-        const signUpOut = await authSvc?.signUp(input);
-        return { message: "User signed up", data: signUpOut };
+        try {
+          const signUpOut = await authSvc?.signUp(input);
+          return { message: "User signed up", data: signUpOut };
+        } catch (err) {
+          return mapError(err as Error);
+        }
       }),
 
     signIn: publicProcedure
@@ -24,7 +29,11 @@ export const authRouter = (authSvc?: AuthSvc) =>
         }),
       )
       .mutation(async ({ input }) => {
-        const signInOut = await authSvc?.signIn(input);
-        return { message: "User signed in", data: signInOut };
+        try {
+          const signInOut = await authSvc?.signIn(input);
+          return { message: "User signed in", data: signInOut };
+        } catch (err) {
+          return mapError(err as Error);
+        }
       }),
   });
