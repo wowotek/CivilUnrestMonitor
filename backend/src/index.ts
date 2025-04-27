@@ -1,32 +1,43 @@
-import { Hono } from 'hono'
-import { createBunWebSocket } from 'hono/bun'
-import type { ServerWebSocket } from 'bun'
+import {
+  fastifyTRPCPlugin,
+  type FastifyTRPCPluginOptions,
+} from "@trpc/server/adapters/fastify";
+import fastify from "fastify";
+import { createContext, appRouter, type AppRouter } from "./router";
+import { authSvc, healthSvc } from "./core/service";
+import { userRepository } from "./repository";
+import { drizzle } from "drizzle-orm/node-postgres";
 
-const { upgradeWebSocket, websocket } = createBunWebSocket<ServerWebSocket>()
+const db = drizzle("postgres://postgres:postgres@localhost:5432/postgres");
 
-//@ts-ignore
-const app = new Hono({websocket});
+const userRepo = userRepository(db);
 
-app.get(
-    '/ws',
-    upgradeWebSocket((c) => {
-      return {
-        onOpen: (event, ws) => {
-          console.log('Connection opened')
-          ws.send('Hello from server!')
-        },
-        onMessage(event, ws) {
-          console.log(`Message from client: ${event.data}`)
-          ws.send('Hello from server!')
-        },
-        onClose: () => {
-          console.log('Connection closed')
-        },
-      }
-    })
-  )
+const healthService = healthSvc;
+const authService = authSvc(userRepo);
 
-export default {
-  fetch: app.fetch,
-  websocket,
-}
+const router = appRouter(healthService, authService);
+
+const server = fastify({
+  maxParamLength: 5000,
+});
+
+server.register(fastifyTRPCPlugin, {
+  prefix: "/trpc",
+  trpcOptions: {
+    router: router,
+    createContext,
+    onError({ path, error }) {
+      // report to error monitoring
+      console.error(`Error in tRPC handler on path '${path}':`, error);
+    },
+  } satisfies FastifyTRPCPluginOptions<AppRouter>["trpcOptions"],
+});
+
+(async () => {
+  try {
+    await server.listen({ port: 3000 });
+  } catch (err) {
+    server.log.error(err);
+    process.exit(1);
+  }
+})();

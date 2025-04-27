@@ -4,7 +4,8 @@
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest",
-    "drizzle-kit": "^0.30.5",
+    "@types/pg": "^8.11.14",
+    "drizzle-kit": "^0.31.0",
     "tsx": "^4.19.3"
   },
   "peerDependencies": {
@@ -12,14 +13,18 @@
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.3",
-    "dotenv": "^16.4.7",
-    "drizzle-orm": "^0.40.1",
+    "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.43.1",
+    "fastify": "^5.3.2",
     "hono": "^4.7.5",
     "mysql2": "^3.14.0",
+    "pg": "^8.15.5",
     "zod": "^3.24.2"
   },
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
-  }
+    "dev": "bun run --hot src/index.ts",
+    "migration:generate": "drizzle-kit generate",
+    "migration:migrate": "drizzle-kit migrate"
+  },
+  "private": true
 }
-
